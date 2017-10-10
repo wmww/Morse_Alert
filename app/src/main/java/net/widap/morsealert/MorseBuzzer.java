@@ -20,10 +20,10 @@ class MorseBuzzer {
     private String text;
 
     private int dotTime = 200;
-    private int dashTime = dotTime * 3;
+    private int dashTime = dotTime * 4;
     private int smallSpaceTime = dotTime;
-    private int letterSpaceTime = dashTime;
-    private int wordSpaceTime = dotTime * 7;
+    private int letterSpaceTime = dotTime * 6;
+    private int wordSpaceTime = dotTime * 12;
     private int extraLongTime = 1000;
 
     MorseBuzzer(String text, Service service) {
@@ -40,17 +40,51 @@ class MorseBuzzer {
     }
 
     private void buzzFor(int time) {
-        vibrator.vibrate(dotTime);
+        vibrator.vibrate(time);
         sleepFor(time);
     }
 
     private String getCodeFor(char c) {
         switch (c) {
+            case ' ': return "/";
+            case '.': return "";
+            case ',': return "";
             case 'a': return ".-";
             case 'b': return "-...";
             case 'c': return "-.-.";
             case 'd': return "-..";
-            case ' ': return "/";
+            case 'e': return ".";
+            case 'f': return "..-.";
+            case 'g': return "--.";
+            case 'h': return "....";
+            case 'i': return "..";
+            case 'j': return ".---";
+            case 'k': return "-.-";
+            case 'l': return ".-..";
+            case 'm': return "--";
+            case 'n': return "-.";
+            case 'o': return "---";
+            case 'p': return ".--.";
+            case 'q': return "--.-";
+            case 'r': return ".-.";
+            case 's': return "...";
+            case 't': return "-";
+            case 'u': return "..-";
+            case 'v': return "...-";
+            case 'w': return ".--";
+            case 'x': return "-..-";
+            case 'y': return "-.--";
+            case 'z': return "--..";
+            case '0': return "-----";
+            case '1': return ".----";
+            case '2': return "..---";
+            case '3': return "...--";
+            case '4': return "....-";
+            case '5': return ".....";
+            case '6': return "-....";
+            case '7': return "--...";
+            case '8': return "---..";
+            case '9': return "----.";
             default: return "|";
         }
     }
@@ -70,19 +104,21 @@ class MorseBuzzer {
 
     private void buzzCode(char c) {
         switch (c) {
-            case '.': buzzFor(dotTime);
-            case '-': buzzFor(dashTime);
-            case '|': buzzFor(extraLongTime);
-            default: vibrator.vibrate(extraLongTime);
+            case '.': buzzFor(dotTime); break;
+            case '-': buzzFor(dashTime); break;
+            case ' ': sleepFor(smallSpaceTime); break;
+            case '/': sleepFor(wordSpaceTime); break;
+            case '|': buzzFor(extraLongTime); break;
+            default: buzzFor(extraLongTime); break;
         }
     }
 
     private void buzzCode(String code) {
-        for (int i = 0; i < text.length(); i++){
+        for (int i = 0; i < code.length(); i++){
             if (i != 0) {
                 sleepFor(smallSpaceTime);
             }
-            char c = text.charAt(i);
+            char c = code.charAt(i);
             buzzCode(c);
         }
     }
@@ -91,6 +127,6 @@ class MorseBuzzer {
         System.out.println("buzzing text: " + text);
         String code = getCodeFor(text);
         System.out.println("buzzing code: " + code);
-        buzzCode(code);
+        //buzzCode(code);
     }
 }
