@@ -32,9 +32,10 @@ public class NotificationService extends NotificationListenerService {
                 data.getNotification().tickerText.toString(),
                 data.getPackageName()
                 );
-        if (text != null && ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).getRingerMode() != AudioManager.RINGER_MODE_SILENT)
-        {
+        if (text != null && ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
             new MorseBuzzer(text, this).go();
+        } else {
+            System.out.println("got null for notification from " + data.getPackageName());
         }
         // Vibrate for 500 milliseconds
         // VibrationEffect effect = VibrationEffect.createOneShot(500, 255);

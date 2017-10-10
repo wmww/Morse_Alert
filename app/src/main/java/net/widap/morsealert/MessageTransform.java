@@ -1,9 +1,21 @@
 package net.widap.morsealert;
 
-public class MessageTransform {
-    public static String transformMessage(String body, String sourcePackage) {
+class MessageTransform {
+    private static String[] packageWhitelist = new String[] {
+            "com.facebook.orca", // facebook messenger
+            "net.dinglisch.android.taskerm", // tasker
+    };
+
+    static String transformMessage(String body, String sourcePackage) {
         System.out.println("transforming " + body + " from " + sourcePackage);
-        if (sourcePackage == "com.facebook.orca") {
+        Boolean packageGood = false;
+        for (String i : packageWhitelist) {
+            if (sourcePackage.equals(i)) {
+                packageGood = true;
+                break;
+            }
+        }
+        if (packageGood) {
             return body;
         }
         return null;
