@@ -127,6 +127,6 @@ class MorseBuzzer {
         System.out.println("buzzing text: " + text);
         String code = getCodeFor(text);
         System.out.println("buzzing code: " + code);
-        //buzzCode(code);
+        buzzCode(code);
     }
 }

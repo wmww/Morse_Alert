@@ -1,6 +1,7 @@
 package net.widap.morsealert;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.os.Parcel;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -26,10 +27,15 @@ public class NotificationService extends NotificationListenerService {
 
     @Override
     public void onNotificationPosted(StatusBarNotification data) {
-
-        String text = data.getNotification().tickerText.toString();
-        System.out.println("buzzing text: " + text);
-        new MorseBuzzer(text, this).go();
+        //System.out.println("buzzing text: " + text + " from " + data.getPackageName());
+        String text = MessageTransform.transformMessage(
+                data.getNotification().tickerText.toString(),
+                data.getPackageName()
+                );
+        if (text != null && ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).getRingerMode() != AudioManager.RINGER_MODE_SILENT)
+        {
+            new MorseBuzzer(text, this).go();
+        }
         // Vibrate for 500 milliseconds
         // VibrationEffect effect = VibrationEffect.createOneShot(500, 255);
         // data.getId()
