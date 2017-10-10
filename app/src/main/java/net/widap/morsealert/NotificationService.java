@@ -2,8 +2,6 @@ package net.widap.morsealert;
 
 import android.content.Context;
 import android.os.Parcel;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
@@ -29,11 +27,11 @@ public class NotificationService extends NotificationListenerService {
     @Override
     public void onNotificationPosted(StatusBarNotification data) {
 
-        System.out.println("notification text: " + data.getNotification().tickerText);
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        String text = data.getNotification().tickerText.toString();
+        System.out.println("buzzing text: " + text);
+        new MorseBuzzer(text, this).go();
         // Vibrate for 500 milliseconds
         // VibrationEffect effect = VibrationEffect.createOneShot(500, 255);
-        v.vibrate(1000);
         // data.getId()
         // data.getNotification().tickerText
         // data.getPackageName());
