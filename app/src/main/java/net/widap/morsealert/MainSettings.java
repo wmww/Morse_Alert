@@ -1,39 +1,33 @@
 package net.widap.morsealert;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.provider.Settings;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 public class MainSettings extends AppCompatActivity {
-    //private NotificationReceiver receiver;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_settings);
-        //receiver = new NotificationReceiver();
-        //IntentFilter filter = new IntentFilter();
-        //filter.addAction(getApplicationContext().getPackageName() + ".NOTIFICATION_LISTENER_EXAMPLE");
-        //registerReceiver(receiver, filter);
+        prefs = getSharedPreferences("morse_alert_main", MODE_PRIVATE);
+
+        Switch globalToggle = (Switch) findViewById(R.id.global_toggle);
+        globalToggle.setChecked(prefs.getBoolean("global_toggle", true));
+        globalToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putBoolean("global_toggle", isChecked);
+                editor.apply();
+            }
+        });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //unregisterReceiver(receiver);
     }
-
-    /*
-    class NotificationReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            System.out.println("notification: " + intent.getStringExtra("notification_data"));
-        }
-    }
-    */
 }

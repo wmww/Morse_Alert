@@ -1,84 +1,37 @@
 package net.widap.morsealert;
 
-import android.content.Context;
-import android.media.AudioManager;
-import android.os.Parcel;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
 public class NotificationService extends NotificationListenerService {
-    //private NotificationReceiver reciever;
 
     @Override
     public void onCreate() {
         super.onCreate();
         System.out.println("NotificationService created");
-        //reciever = new NotificationReceiver();
-        //IntentFilter filter = new IntentFilter();
-        //filter.addAction(getApplicationContext().getPackageName() + ".NOTIFICATION_LISTENER_SERVICE_EXAMPLE");
-        //registerReceiver(reciever, filter);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //unregisterReceiver(reciever);
     }
 
     @Override
     public void onNotificationPosted(StatusBarNotification data) {
-        //System.out.println("buzzing text: " + text + " from " + data.getPackageName());
-        String text = MessageTransform.transformMessage(
-                data.getNotification().tickerText.toString(),
-                data.getPackageName()
-                );
-        if (text != null && ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).getRingerMode() != AudioManager.RINGER_MODE_SILENT) {
+        //System.out.println("buzzing text: " + text + " from " + data.getPackageName())
+        CharSequence tickerTextChars = data.getNotification().tickerText;
+        String tickerText = "";
+        if (tickerTextChars != null) {
+            tickerText = tickerTextChars.toString();
+        }
+        String text = MessageTransform.transformMessage(tickerText, data.getPackageName(), this);
+        if (text != null) {
             new MorseBuzzer(text, this).go();
         } else {
             System.out.println("got null for notification from " + data.getPackageName());
         }
-        // Vibrate for 500 milliseconds
-        // VibrationEffect effect = VibrationEffect.createOneShot(500, 255);
-        // data.getId()
-        // data.getNotification().tickerText
-        // data.getPackageName());
-        // Intent intent = new  Intent(getApplicationContext().getPackageName() + ".NOTIFICATION_LISTENER_EXAMPLE");
-        // intent.putExtra("notification_event","notification from " + data.getPackageName() + "\n");
-        // sendBroadcast(intent);
     }
 
     @Override
-    public void onNotificationRemoved(StatusBarNotification data) {
-        //Intent intent = new  Intent(getApplicationContext().getPackageName() + ".NOTIFICATION_LISTENER_EXAMPLE");
-        //intent.putExtra("notification_event","notification removed " + data.getPackageName() + "\n");
-        //sendBroadcast(intent);
-    }
-
-    /*
-    class NotificationReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if(intent.getStringExtra("command").equals("clearall")){
-                NotificationService.this.cancelAllNotifications();
-            }
-            else if(intent.getStringExtra("command").equals("list")){
-                Intent i1 = new  Intent(getApplicationContext().getPackageName() + ".NOTIFICATION_LISTENER_EXAMPLE");
-                i1.putExtra("notification_event","=====================");
-                sendBroadcast(i1);
-                int i=1;
-                for (StatusBarNotification notification : NotificationService.this.getActiveNotifications()) {
-                    Intent intent2 = new  Intent(getApplicationContext().getPackageName() +".NOTIFICATION_LISTENER_EXAMPLE");
-                    intent2.putExtra("notification_event",i +" " + notification.getPackageName() + "\n");
-                    sendBroadcast(intent2);
-                    i++;
-                }
-                Intent i3 = new  Intent("com.kpbird.nlsexample.NOTIFICATION_LISTENER_EXAMPLE");
-                i3.putExtra("notification_event","===== Notification List ====");
-                sendBroadcast(i3);
-
-            }
-
-        }
-    }
-    */
+    public void onNotificationRemoved(StatusBarNotification data) {}
 }

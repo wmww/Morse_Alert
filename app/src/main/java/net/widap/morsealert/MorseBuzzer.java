@@ -2,6 +2,7 @@ package net.widap.morsealert;
 
 import android.app.Service;
 import android.content.Context;
+import android.media.AudioManager;
 import android.os.Vibrator;
 import android.os.VibrationEffect;
 import android.provider.Settings;
@@ -25,10 +26,12 @@ class MorseBuzzer {
     private int letterSpaceTime = dotTime * 6;
     private int wordSpaceTime = dotTime * 12;
     private int extraLongTime = 1000;
+    private AudioManager audioManager;
 
     MorseBuzzer(String text, Service service) {
         this.text = text;
         vibrator = (Vibrator) service.getSystemService(Context.VIBRATOR_SERVICE);
+        audioManager = (AudioManager) service.getSystemService(Context.AUDIO_SERVICE);
     }
 
     private void sleepFor(int time) {
@@ -114,7 +117,11 @@ class MorseBuzzer {
     }
 
     private void buzzCode(String code) {
-        for (int i = 0; i < code.length(); i++){
+        for (int i = 0; i < code.length(); i++) {
+            if (audioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT) {
+                System.out.println("canceling message");
+                break;
+            }
             if (i != 0) {
                 sleepFor(smallSpaceTime);
             }
